@@ -13,7 +13,7 @@ function Registro({ estudiante, escala, cga, show }: Props) {
   const [data, setData] = useState({} as any);
   const GetBase = async () => {
     // console.log("todo bien");
-    const proceso = await axios
+ const proceso = await axios
       .get(
         `/api/ProcesosEvaluacion/ProcesoCargado?cg=${cga}&e=${escala}&c=${localStorage.getItem(
           "colegio"
@@ -24,11 +24,16 @@ function Registro({ estudiante, escala, cga, show }: Props) {
         if (res.status == 200) {
           return res.data?.procesosAsig;
         }
+        const error =true;
       })
-      .catch((error) => {
-        console.log(error);
-        alert("Existe un error al consultar los procesos");
-      });
+      if (error) {
+        // Si ocurre un error, rechazamos la promesa con un mensaje de error
+        reject(new Error('Existe un error al registrar procesos'));
+      } else {
+        // Si la solicitud es exitosa, resolvemos la promesa
+        resolve();
+
+        console.log('Proceso de registro cargado exitosamente.');
     const Observaciones = await axios
       .get(
         `/api/ObservacionesProcesos/ProcesoCargado?cg=${cga}&e=${escala}&c=${localStorage.getItem(
