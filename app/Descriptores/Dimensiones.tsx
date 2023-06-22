@@ -64,10 +64,7 @@ const Dimensiones = ({ dimension, open, posicion, setOpen }: Props) => {
           return res.data?.Proceso;
         }
       })
-      .catch((error) => {
-        console.log(error);
-        alert("Existe un error al consultar los procesos");
-      });
+
     const Observaciones = await axios
       .get(
         `/api/ObservacionesProcesos/ProcesoCargado?cg=${dimensiones?.cga}&e=${
@@ -80,10 +77,7 @@ const Dimensiones = ({ dimension, open, posicion, setOpen }: Props) => {
           return res.data?.Proceso;
         }
       })
-      .catch((error) => {
-        console.log(error);
-        alert("Existe un error al consultar los procesos");
-      });
+
     setInformacion({ ["Observaciones"]: Observaciones, ["procesos"]: proceso });
   };
   useEffect(() => {
