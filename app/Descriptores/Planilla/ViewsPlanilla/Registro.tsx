@@ -25,10 +25,7 @@ function Registro({ estudiante, escala, cga, show }: Props) {
           return res.data?.procesosAsig;
         }
       })
-      .catch((error) => {
-        console.log(error);
-        alert("Existe un error al consultar los procesos");
-      });
+
     const Observaciones = await axios
       .get(
         `/api/ObservacionesProcesos/ProcesoCargado?cg=${cga}&e=${escala}&c=${localStorage.getItem(
@@ -41,12 +38,7 @@ function Registro({ estudiante, escala, cga, show }: Props) {
           return res.data?.procesosAsig;
         }
       })
-      .catch((error) => {
-        console.log(error);
-        alert("Existe un error al consultar los procesos");
-      });
-    setData({ ["Observaciones"]: Observaciones, ["Procesos"]: proceso });
-  };
+
 
   const columns: any = [
     {
