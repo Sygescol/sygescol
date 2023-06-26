@@ -1,7 +1,7 @@
 "use client";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import DataTable from 'react-data-table-component';
 import { customStyles } from "../../../../utils/CustomStylesTables";
 export type Props = {
   estudiante: any;
@@ -9,44 +9,52 @@ export type Props = {
   cga: any;
   show: any;
 };
-function Registro({ estudiante, escala, cga, show }: Props) {
+async function Registro({ estudiante, escala, cga, show }: Props) {
   const [data, setData] = useState({} as any);
   const GetBase = async () => {
-    // console.log("todo bien");
-    const proceso = await axios
-      .get(
-        `/api/ProcesosEvaluacion/ProcesoCargado?cg=${cga}&e=${escala}&c=${localStorage.getItem(
-          "colegio"
-        )}&i=${estudiante}`
-      )
-      .then((res) => {
-        // console.log(res);
-        if (res.status == 200) {
-          return res.data?.procesosAsig;
+    try {
+      const procesoResponse = await axios.get(`/api/ProcesosEvaluacion/ProcesoCargado?cg=${cga}&e=${escala}&c=${localStorage.getItem("colegio")}&i=${estudiante}`);
+      
+      if (procesoResponse.status === 200) {
+        const proceso = procesoResponse.data?.procesosAsig;
+        
+        const observacionesResponse = await axios.get(`/api/ObservacionesProcesos/ProcesoCargado?cg=${cga}&e=${escala}&c=${localStorage.getItem("colegio")}&i=${estudiante}`);
+        
+        if (observacionesResponse.status === 200) {
+          const observaciones = observacionesResponse.data?.procesosAsig;
+          setData({ ["Observaciones"]: observaciones, ["Procesos"]: proceso });
+        } else {
+          throw new Error("Error al consultar las observaciones");
         }
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("Existe un error al consultar los procesos");
-      });
-    const Observaciones = await axios
-      .get(
-        `/api/ObservacionesProcesos/ProcesoCargado?cg=${cga}&e=${escala}&c=${localStorage.getItem(
-          "colegio"
-        )}&i=${estudiante}`
-      )
-      .then((res) => {
-        // console.log(res);
-        if (res.status == 200) {
-          return res.data?.procesosAsig;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("Existe un error al consultar los procesos");
-      });
-    setData({ ["Observaciones"]: Observaciones, ["Procesos"]: proceso });
+      } else {
+        throw new Error("Error al consultar los procesos");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Existe un error al consultar los procesos");
+    }
   };
+  
+  const Observaciones = await axios
+  .get(
+    `/api/ObservacionesProcesos/ProcesoCargado?cg=${cga}&e=${escala}&c=${localStorage.getItem(
+      "colegio"
+    )}&i=${estudiante}`
+  )
+  .then((res) => {
+    if (res.status === 200) {
+      return res.data?.procesosAsig;
+    } else {
+      throw new Error("Error al consultar las observaciones");
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+    throw new Error("Existe un error al consultar los procesos");
+  });
+
+setData({ ["Observaciones"]: Observaciones, ["Procesos"]: process });
+
 
   const columns: any = [
     {
